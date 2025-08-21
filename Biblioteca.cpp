@@ -39,7 +39,7 @@ public:
             return;
         }
         for (const auto& libro : coleccion) {
-            libro.mostrarDetallesCompletos();
+            //libro.mostrarDetallesCompletos();
             std::cout << "-------------------\n";
         }
     }
@@ -112,3 +112,4 @@ int main (){
 
 
 
+//hola
