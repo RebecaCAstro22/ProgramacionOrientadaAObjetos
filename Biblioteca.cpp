@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>  // Guarda y Carga archivos
+#include <sstream>  // ← Necesario para usar std::stringstream
 
 class Libro {
     public :
@@ -12,12 +14,12 @@ class Libro {
     //Inicializar valores
     Libro() : anioPublicacion(0), estaDisponible(true) {}
 
-    void mostrarDetalles(){
+    void mostrarDetalles() const{
         std:: cout << "---------------------"<< std::endl;
         std:: cout << "Titulo: "<< titulo<< std::endl;
         std:: cout << "Autor: "<< autor<< std::endl;
         std:: cout << "Año: "<< anioPublicacion<< std::endl;
-        std:: cout << "Disponible: "<< estaDisponible<< std::endl;
+        std:: cout << "Disponible: "<< (estaDisponible ? "Si": "No")<< std::endl;
 
     }
 };
@@ -28,18 +30,24 @@ private:
 
 public:
     void agregarLibro(const Libro& nuevoLibro) {
+        for (const auto& libro : coleccion){
+            if(libro.titulo== nuevoLibro.titulo){
+                std::cout <<"El libro ya existe en la biblioteca. \n";
+            }
+        }
+
         coleccion.push_back(nuevoLibro);
         std::cout << "Libro agregado correctamente.\n";
     }
 
-    void mostrarInventario() {
+    void mostrarInventario() const {
         std::cout << "\n--- INVENTARIO ---\n";
         if (coleccion.empty()) {
             std::cout << "La biblioteca está vacía.\n";
             return;
         }
         for (const auto& libro : coleccion) {
-            //libro.mostrarDetallesCompletos();
+            libro.mostrarDetalles();
             std::cout << "-------------------\n";
         }
     }
@@ -53,9 +61,9 @@ public:
         return nullptr;
     }
 
-    void prestarLibro(const std::string& tituloPrestamo) {
-        Libro* libro = buscarLibro(tituloPrestamo);
-        if (libro == nullptr) {
+    void prestarLibro(const std::string& titulo) {
+        Libro* libro = buscarLibro(titulo);
+        if (!libro) {
             std::cout << "El libro no se encuentra en la biblioteca.\n";
         } else if (!libro->estaDisponible) {
             std::cout << "El libro ya está prestado.\n";
@@ -65,9 +73,9 @@ public:
         }
     }
 
-    void devolverLibro(const std::string& tituloDevolucion) {
-        Libro* libro = buscarLibro(tituloDevolucion);
-        if (libro == nullptr) {
+    void devolverLibro(const std::string& titulo) {
+        Libro* libro = buscarLibro(titulo);
+        if (!libro) {
             std::cout << "El libro no se encuentra en la biblioteca.\n";
         } else if (libro->estaDisponible) {
             std::cout << "El libro ya estaba disponible.\n";
@@ -76,10 +84,43 @@ public:
             std::cout << "Has devuelto el libro: " << libro->titulo << "\n";
         }
     }
+
+void guardarBiblioteca(const std::string& nombreArchivo) {
+    std::ofstream archivo(nombreArchivo);
+    for (const auto& libro : coleccion) {
+        archivo << libro.titulo << "," << libro.autor << "," << libro.anioPublicacion << "," << libro.estaDisponible << "\n";
+    }
+    archivo.close();
+    std::cout << " Biblioteca guardada en " << nombreArchivo << "\n";
+}
+
+void cargarBiblioteca(const std::string& nombreArchivo) {
+    std::ifstream archivo(nombreArchivo);
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        std::stringstream ss(linea);
+        Libro libro;
+        std::string disponibleStr;
+
+        std::getline(ss, libro.titulo, ',');
+        std::getline(ss, libro.autor, ',');
+        ss >> libro.anioPublicacion;
+        ss.ignore(); // saltar la coma
+        std::getline(ss, disponibleStr);
+        libro.estaDisponible = (disponibleStr == "1");
+
+        coleccion.push_back(libro);
+    }
+    archivo.close();
+    std::cout << "Biblioteca cargada desde " << nombreArchivo << "\n";
+}
+    
 };
 
 int main (){
     Biblioteca miBiblioteca;
+    miBiblioteca.cargarBiblioteca("datos.txt");
+
     int opcion = 0;
 
 
@@ -90,26 +131,50 @@ int main (){
 
     
 
+    
+
     while (opcion != 5) {
         std::cout << "\n--- BIBLIOTECA DIGITAL ---" << std::endl;
-        std::cout << "1. Anadir libro" << std::endl;
+        std::cout << "1. Añadir libro" << std::endl;
         std::cout << "2. Mostrar inventario" << std::endl;
         std::cout << "3. Prestar libro" << std::endl;
         std::cout << "4. Devolver libro" << std::endl;
         std::cout << "5. Salir" << std::endl;
         std::cout << "Seleccione una opcion: ";
         std::cin >> opcion;
-        
-        // Limpiar el buffer de entrada para futuras lecturas de texto
-        std::cin.ignore();
+        std ::cin.ignore();// Limpiar el buffer de entrada para futuras lecturas de texto
 
-        // Usar un switch o if-else para manejar la opción del usuario
-        // ... Lógica del menú aquí ...
+        if (opcion ==1){
+            Libro nuevo;
+            std::cout << "Título: ";
+            std::getline(std::cin, nuevo.titulo);
+            std::cout << "Autor: ";
+            std::getline(std::cin, nuevo.autor);
+            std::cout << "Año de publicación: ";
+            std::cin >> nuevo.anioPublicacion;
+            std::cin.ignore();
+            nuevo.estaDisponible = true;
+            miBiblioteca.agregarLibro(nuevo);
+        } else if (opcion == 2) {
+            miBiblioteca.mostrarInventario();
+        } else if (opcion == 3) {
+            std::string titulo;
+            std::cout << "Título a prestar: ";
+            std::getline(std::cin, titulo);
+            miBiblioteca.prestarLibro(titulo);
+        } else if (opcion == 4) {
+            std::string titulo;
+            std::cout << "Título a devolver: ";
+            std::getline(std::cin, titulo);
+            miBiblioteca.devolverLibro(titulo);
+        } else if (opcion != 5) {
+            std::cout << "Opción inválida. Intente de nuevo.\n";
+        }
     }
-
+miBiblioteca.guardarBiblioteca("datosdeBiblioteca.txt");
     return 0;
 }
 
 
 
-//hola
+
