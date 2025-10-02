@@ -4,15 +4,15 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <limits>    
+ 
 #include <ctime> // Necesario para obtener la hora y fecha del sistema
-#include <map> // Necesario para usar std::map
-#include <limits> // Necesario para std::numeric_limits
+#include <map> // Necesario para usar std::map(Ayuda de IA)
+#include <limits> // Necesario para std::numeric_limits (Ayuda de IA)
 
 
 using namespace std;
 
-// <<< PEGA LA FUNCIÓN AQUÍ <<<
+
 
 // Función de ayuda para validar que un string solo contenga letras y espacios
 bool esSoloTexto(const string& str) {
@@ -28,7 +28,7 @@ bool esSoloTexto(const string& str) {
 
 using namespace std;
 
-// === 1. STRUCTS (Tablas del Modelo Relacional 3FN) ===
+// === 1.(Tablas del Modelo Relacional 3FN) ===
 
 struct Autor {
     int id_autor;       // PK
@@ -60,7 +60,7 @@ struct Prestamo {
     bool activo = true; // true si está prestado, false si fue devuelto
 };
 
-// === 2. CLASE GESTORA DE LA BASE DE DATOS EN MEMORIA ===
+// === 2. CLASE DE LA BASE DE DATOS EN MEMORIA ===
 
 class BibliotecaDB {
 public:
@@ -103,7 +103,7 @@ public:
     bool actualizarEstudiante(int id, const string& nuevo_nombre, const string& nuevo_grado);
     bool eliminarEstudiante(int id);
 
-    // --- TRANSACCIONES: PRÉSTAMO ---
+    // --- PRÉSTAMO ---
     void realizarPrestamo(Prestamo p);
     void devolverLibro(int id_prestamo);
     void buscarPrestamosPorEstudiante(int id_estudiante); // Simula JOIN
@@ -127,7 +127,7 @@ private:
 //                          IMPLEMENTACIONES
 // ====================================================================
 
-// --- Utilidades ---
+
 // --- ANÁLISIS DE DATOS ---
 // Encuentra y muestra el autor que tiene más libros registrados.
 void BibliotecaDB::mostrarAutorConMasLibros() {
@@ -137,7 +137,7 @@ void BibliotecaDB::mostrarAutorConMasLibros() {
     }
 
     // 1. Contar la frecuencia de cada ID de autor
-    // map<ID_Autor, Cantidad_Libros>
+    // map<ID_Autor, Cantidad_Libros> (Ayuda de IA)
     map<int, int> conteo_autores;
     
     for (const auto& libro : libros) {
@@ -178,7 +178,7 @@ void BibliotecaDB::mostrarAutorConMasLibros() {
             cout << "\n[ADVERTENCIA] El autor con ID " << id_autor_mas_libros << " no existe en la base de datos de autores.\n";
         }
     } else {
-         // Este caso es redundante si libros.empty() se maneja arriba, pero es un buen control
+         // Este caso es redundante si libros.empty(), pero es un control extra
         cout << "\n[INFO] No se pudo encontrar un autor con libros registrados.\n";
     }
 }
@@ -186,7 +186,7 @@ void BibliotecaDB::mostrarAutorConMasLibros() {
 string BibliotecaDB::leerLinea() {
     string linea;
     if (cin.peek() == '\n' || cin.peek() == EOF) {
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');//(Ayuda de IA)
     }
     getline(cin, linea);
     return linea;
@@ -204,7 +204,7 @@ int BibliotecaDB::obtenerSiguienteId(const string& tipo) {
 int obtenerAnoActual() {
     time_t now = time(0);
     tm *ltm = localtime(&now);
-    // El struct tm guarda el año desde 1900, por eso sumamos 1900
+    // El struct guarda el año desde 1900, por eso sumamos 1900
     return 1900 + ltm->tm_year; 
 }
 
@@ -242,7 +242,7 @@ BibliotecaDB::~BibliotecaDB() {
 }
 
 // --- Persistencia (Funciones simplificadas de guardar/cargar) ---
-// NOTA: La lógica de guardado y cargado se repite intencionalmente para la claridad del formato CSV.
+// NOTA: La lógica de guardado y cargado se repite para la claridad del formato CSV.
 
 void BibliotecaDB::guardarAutores() {
     ofstream archivo("autores.txt");
@@ -273,7 +273,7 @@ void BibliotecaDB::guardarLibros() {
     }
     archivo.close();
 }
-void BibliotecaDB::cargarLibros() {
+void BibliotecaDB::cargarLibros() {//(Ayuda de IA)
     ifstream archivo("libros.txt");
     string linea, segmento;
     int disp_int;
@@ -342,7 +342,7 @@ void BibliotecaDB::cargarPrestamos() {
 
 // --- IMPLEMENTACIÓN CRUD COMPLETO ---
 
-// CREATE
+// Creacion
 void BibliotecaDB::agregarAutor(Autor a) {
     a.id_autor = obtenerSiguienteId("Autor");
     autores.push_back(a);
@@ -354,7 +354,7 @@ void BibliotecaDB::agregarEstudiante(Estudiante e) {
     cout << "\n[OK] Estudiante '" << e.nombre << "' agregado con ID: " << e.id_estudiante << ".\n";
 }
 void BibliotecaDB::agregarLibro(Libro l) {
-    if (buscarAutor(l.id_autor) == nullptr) { // FK Validation
+    if (buscarAutor(l.id_autor) == nullptr) { // FK 
         cout << "\n[ERROR] El ID de Autor (" << l.id_autor << ") no existe. Libro no agregado.\n";
         return;
     }
@@ -367,7 +367,7 @@ void BibliotecaDB::agregarLibro(Libro l) {
 void BibliotecaDB::listarAutores() {
     cout << "\n--- LISTADO DE AUTORES ---\n";
     for (const auto& a : autores) {
-        cout << "ID: " << a.id_autor << " | Nombre: " << a.nombre << " | Nacionalidad: " << a.nacionalidad << "\n";
+        cout << "ID: " << a.id_autor << " | Nombre: " << a.nombre << " | Nacionalidad: " << a.nacionalidad << "\n"; //(Ayuda de IA)
     }
 }
 void BibliotecaDB::listarEstudiantes() {
@@ -389,7 +389,7 @@ void BibliotecaDB::listarLibros() {
     }
 }
 
-// UPDATE
+// Actualizar
 bool BibliotecaDB::actualizarAutor(int id, const string& nuevo_nombre, const string& nueva_nacionalidad) {
     Autor* a = buscarAutor(id);
     if (a != nullptr) {
@@ -412,7 +412,7 @@ bool BibliotecaDB::actualizarEstudiante(int id, const string& nuevo_nombre, cons
     cout << "\n[ERROR] Estudiante " << id << " no encontrado para actualizar.\n";
     return false;
 }
-// **UPDATE LIBRO**
+// **Actualizar LIBRO**
 bool BibliotecaDB::actualizarLibro(int id, const string& nuevo_titulo, const string& nuevo_isbn, int nuevo_ano, int nuevo_autor_id) {
     Libro* l = buscarLibro(id);
     if (l != nullptr) {
@@ -427,7 +427,7 @@ bool BibliotecaDB::actualizarLibro(int id, const string& nuevo_titulo, const str
         l->isbn = nuevo_isbn;
         l->ano_publicacion = nuevo_ano; 
         l->id_autor = nuevo_autor_id;
-        // ------------------------------------
+        // ------------------------------------(Ayuda de IA)
         
         cout << "\n[OK] Libro " << id << " actualizado.\n";
         return true;
@@ -482,7 +482,7 @@ bool BibliotecaDB::eliminarLibro(int id) {
     return false;
 }
 
-// --- TRANSACCIONES ---
+// --- Prestamo---
 
 void BibliotecaDB::realizarPrestamo(Prestamo p) {
     Libro* libro = buscarLibro(p.id_libro);
@@ -500,7 +500,7 @@ void BibliotecaDB::realizarPrestamo(Prestamo p) {
     p.id_prestamo = obtenerSiguienteId("Prestamo");
     p.activo = true;
     prestamos.push_back(p);
-    libro->disponible = false; // UPDATE de Libro (Transacción)
+    libro->disponible = false; // ACtualizacion de Libro (Transacción)
 
     cout << "\n[OK] PRÉSTAMO REGISTRADO. ID Préstamo: " << p.id_prestamo << ".\n";
 }
@@ -520,10 +520,10 @@ void BibliotecaDB::devolverLibro(int id_prestamo) {
     }
 
     Libro* libro = buscarLibro(p->id_libro);
-    p->activo = false; // UPDATE de Préstamo (Transacción)
+    p->activo = false; // ACtualizacion de Préstamo (Transacción)
     
     if (libro != nullptr) {
-        libro->disponible = true; // UPDATE de Libro (Transacción)
+        libro->disponible = true; // Actualizacion de Libro (Transacción)
         cout << "\n[OK] DEVOLUCIÓN EXITOSA. Libro '" << libro->titulo << "' regresado.\n";
     } else {
         cout << "\n[ADVERTENCIA] Devolución exitosa, pero el libro original no fue encontrado.\n";
@@ -546,7 +546,7 @@ void BibliotecaDB::buscarPrestamosPorEstudiante(int id_estudiante) {
             cout << "  - ID Préstamo: " << p.id_prestamo
                  << " | Libro: " << (libro ? libro->titulo : "Libro Eliminado")
                  << " | Estado: " << (p.activo ? "ACTIVO" : "DEVUELTO") << "\n";
-            encontrado = true;
+            encontrado = true;//(Ayuda de IA)
         }
     }
     if (!encontrado) {
@@ -560,13 +560,10 @@ void BibliotecaDB::buscarPrestamosPorEstudiante(int id_estudiante) {
 // ====================================================================
 
 
-
-// FunciOn de ayuda para el MenU de GestiOn (OpciOn 5)
-// --- Nueva función para manejar el menú CRUD completo (Opción 5) ---
 void gestionarCRUD(BibliotecaDB& db) {
     int op_entidad, id, op_accion;
     string nuevo_nombre, nueva_nacionalidad, nuevo_grado;
-    // int nuevo_autor_id; (No se usa aquí)
+   
 
     cout << "\n--- GESTIÓN COMPLETA (CRUD) ---\n";
     cout << "1. Autor\n2. Estudiante\n";
@@ -578,7 +575,7 @@ void gestionarCRUD(BibliotecaDB& db) {
         return;
     }
     
-    // VALIDACIÓN: Asegura que la opción sea 1 o 2
+    // VALIDACIÓN: 
     if (op_entidad != 1 && op_entidad != 2) {
         cout << "[ERROR] Opción de entidad no válida (" << op_entidad << "). Debe ser 1 o 2. Saliendo.\n";
         return;
@@ -595,12 +592,12 @@ void gestionarCRUD(BibliotecaDB& db) {
     }
     
     // =========================================================================
-    // LÓGICA DE CREATE
+    // LÓGICA DE Creacion
     // =========================================================================
     if (op_accion == 1) { 
         if (op_entidad == 1) { // Autor
             Autor a;
-            // VALIDACIÓN DEL NOMBRE DEL AUTOR (CREATE)
+            // VALIDACIÓN DEL NOMBRE DEL AUTOR 
             do {
                 cout << "Nombre: "; a.nombre = db.leerLinea();
                 if (!esSoloTexto(a.nombre)) {
@@ -608,7 +605,7 @@ void gestionarCRUD(BibliotecaDB& db) {
                 }
             } while (!esSoloTexto(a.nombre));
 
-            // VALIDACIÓN DE LA NACIONALIDAD (CREATE)
+            // VALIDACIÓN DE LA NACIONALIDAD 
             do {
                 cout << "Nacionalidad: "; a.nacionalidad = db.leerLinea();
                 if (!esSoloTexto(a.nacionalidad)) {
@@ -621,7 +618,7 @@ void gestionarCRUD(BibliotecaDB& db) {
         } else if (op_entidad == 2) { // Estudiante
             Estudiante e;
             
-            // VALIDACIÓN DEL NOMBRE DEL ESTUDIANTE (CREATE)
+            // VALIDACIÓN DEL NOMBRE DEL ESTUDIANTE 
             do {
                 cout << "Nombre: "; e.nombre = db.leerLinea();
                 if (!esSoloTexto(e.nombre)) {
@@ -636,13 +633,13 @@ void gestionarCRUD(BibliotecaDB& db) {
         }
     } 
     // =========================================================================
-    // LÓGICA DE UPDATE
+    // LÓGICA DE Actualizacion 
     // =========================================================================
     else if (op_accion == 2) { 
         cout << "ID a actualizar: "; cin >> id;
         
         if (op_entidad == 1) { // Autor
-            // VALIDACIÓN DEL NOMBRE DEL AUTOR (UPDATE)
+            // VALIDACIÓN DEL NOMBRE DEL AUTOR 
             do {
                 cout << "Nuevo Nombre: "; nuevo_nombre = db.leerLinea();
                 if (!esSoloTexto(nuevo_nombre)) {
@@ -650,7 +647,7 @@ void gestionarCRUD(BibliotecaDB& db) {
                 }
             } while (!esSoloTexto(nuevo_nombre));
 
-            // VALIDACIÓN DE LA NACIONALIDAD (UPDATE)
+            // VALIDACIÓN DE LA NACIONALIDAD 
             do {
                 cout << "Nueva Nacionalidad: "; nueva_nacionalidad = db.leerLinea();
                 if (!esSoloTexto(nueva_nacionalidad)) {
@@ -661,7 +658,7 @@ void gestionarCRUD(BibliotecaDB& db) {
             db.actualizarAutor(id, nuevo_nombre, nueva_nacionalidad);
 
         } else if (op_entidad == 2) { // Estudiante
-            // VALIDACIÓN DEL NOMBRE DEL ESTUDIANTE (UPDATE)
+            // VALIDACIÓN DEL NOMBRE DEL ESTUDIANTE 
             do {
                 cout << "Nuevo Nombre: "; nuevo_nombre = db.leerLinea();
                 if (!esSoloTexto(nuevo_nombre)) {
@@ -684,13 +681,11 @@ void gestionarCRUD(BibliotecaDB& db) {
     } 
     else if (op_accion == 4) { // LIST (READ)
         if (op_entidad == 1) db.listarAutores();
-        else if (op_entidad == 2) db.listarEstudiantes();
+        else if (op_entidad == 2) db.listarEstudiantes();//(Ayuda de IA)
     }
 }
 
-// FunciOn de ayuda para el MenU de Libros (OpciOn 1)
-// FunciOn de ayuda para el MenU de Libros (OpciOn 1)
-// FunciOn de ayuda para el MenU de Libros (OpciOn 1)
+
 void gestionarLibros(BibliotecaDB& db) {
     int op_libro, id;
     string nuevo_titulo, nuevo_isbn;
@@ -720,7 +715,7 @@ void gestionarLibros(BibliotecaDB& db) {
 
         cout << "ID del Autor (Debe existir): "; cin >> l.id_autor;
         db.agregarLibro(l);
-    } else if (op_libro == 2) { // READ
+    } else if (op_libro == 2) { // Leer
         db.listarLibros();
     } else if (op_libro == 3) { // UPDATE LIBRO (Validación de Año aplicada)
         cout << "ID del Libro a actualizar: "; cin >> id;
@@ -735,7 +730,7 @@ void gestionarLibros(BibliotecaDB& db) {
                 cout << "[ERROR] Año no válido. Debe ser un número entre 1000 y el año actual (" << ano_actual << ").\n";
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                nuevo_ano = -1; // Fuerza la repetición
+                nuevo_ano = -1; // Fuerza la repetición//(Ayuda de IA)
             }
         } while (nuevo_ano == -1);
 
@@ -747,7 +742,7 @@ void gestionarLibros(BibliotecaDB& db) {
         db.eliminarLibro(id);
     }
 }
-// Función de ayuda para validar el formato DD/MM/AAAA
+// Función para validar el formato DD/MM/AAAA
 bool esFormatoFechaValido(const string& fecha) {
     // 1. Verificar longitud (10 caracteres: DD/MM/AAAA)
     if (fecha.length() != 10) {
@@ -768,13 +763,9 @@ bool esFormatoFechaValido(const string& fecha) {
     }
     
     // NOTA: Esta es una validación de formato BÁSICA.
-    // No verifica si el día es <= 31 o si el mes es <= 12, 
-    // pero es suficiente para validar la estructura del string.
     
     return true;
 }
-// Función de ayuda para validar que un string solo contenga letras y espacios
-// NOTA: Esta función DEBE estar definida ANTES de int main()
 void mostrarMenu() {
     cout << "\n\n--- MENÚ PRINCIPAL ---\n";
     cout << "1. Gestionar Libros\n";
@@ -795,7 +786,7 @@ int main() {
 do {
         mostrarMenu();
         
-        // Manejo robusto de la entrada para evitar bucles o errores
+        // Manejo robusto de la entrada para evitar bucles o errores//(Ayuda de IA)
         if (!(cin >> opcion)) {
              cin.clear();
              cin.ignore(numeric_limits<streamsize>::max(), '\n');

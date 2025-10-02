@@ -7,13 +7,12 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm> // Para std::find_if
-#include <limits>    // Para std::numeric_limits
-#include <map> // Necesario para usar std::map
-#include <limits> // Necesario para std::numeric_limits
+#include <map> // Necesario para usar std::map (Ayuda de IA)
+#include <limits> // Necesario para std::numeric_limits (Ayuda de IA)
 
 using namespace std;
 
-// === 1. STRUCTS (Tablas del Modelo Relacional 3FN) ===
+// === 1.(Tablas del Modelo Relacional 3FN) ===
 
 struct Autor {
     int id_autor;       // PK
@@ -45,11 +44,11 @@ struct Prestamo {
     bool activo = true; // true si está prestado, false si fue devuelto
 };
 
-// === 2. CLASE GESTORA DE LA BASE DE DATOS EN MEMORIA ===
+// === 2. CLASE DE LA BASE DE DATOS EN MEMORIA ===
 
 class BibliotecaDB {
 public:
-void mostrarAutorConMasLibros(); // <<-- NUEVA FUNCIÓN
+void mostrarAutorConMasLibros(); // <<-- Mostrara los LIbros
     // Vectores para almacenar los datos en memoria
     vector<Autor> autores;
     vector<Libro> libros;
@@ -62,7 +61,7 @@ void mostrarAutorConMasLibros(); // <<-- NUEVA FUNCIÓN
     // Destructor: Guarda todos los datos al cerrar
     ~BibliotecaDB();
 
-    // --- Métodos PÚBLICOS de Utilidad (CORRECCIÓN DEL ERROR DE PRIVACIDAD) ---
+    // --- Métodos PÚBLICOS (CORRECCIÓN DEL ERROR DE PRIVACIDAD) ---
     int obtenerSiguienteId(const string& tipo);
     string leerLinea();
 
@@ -81,7 +80,7 @@ void mostrarAutorConMasLibros(); // <<-- NUEVA FUNCIÓN
     // Estudiante
     void agregarEstudiante(Estudiante e);
     
-    // Préstamo (Transacciones)
+    // Préstamo
     void realizarPrestamo(Prestamo p);
     void devolverLibro(int id_prestamo);
     void buscarPrestamosPorEstudiante(int id_estudiante); // Simula JOIN con Libro
